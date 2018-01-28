@@ -25,7 +25,6 @@ notes
    notes/*
 
 
-
 Indices and tables
 ==================
 
