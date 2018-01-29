@@ -1,5 +1,7 @@
 # Sphinx
 
+[Docs](http://www.sphinx-doc.org/en/1.4.8/contents.html)
+
 ## 安裝
 
 ```shell
@@ -46,3 +48,19 @@ pip install sphinx-autobuild
 # 监听 source 目录, 生成的文件放置于 build/html
 sphinx-autobuild source build/html
 ```
+
+### theme
+
+```shell
+# 安装
+pip install sphinx_rtd_theme
+
+# 配置
+import sphinx_rtd_theme
+html_theme = 'sphinx_rtd_theme'
+```
+
+[HTML theming support](http://www.sphinx-doc.org/en/stable/theming.html)
+
+- [sphinx_rtd_theme](https://pypi.python.org/pypi/sphinx_rtd_theme)
+- [sphinx-bootstrap-theme](https://github.com/ryan-roemer/sphinx-bootstrap-theme)
