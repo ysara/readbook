@@ -143,3 +143,64 @@ FrenchDeck 是不能洗牌的, 因为这摞牌是不可变的, 卡牌和它的�
 
 ### 模拟数值类型
 
+```python
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+
+from math import hypot
+
+
+class Vector:
+    def __init__(self, x=0, y=0):
+        self.x = x
+        self.y = y
+
+    def __repr__(self):
+        return 'Vector(%r, %r)' % (self.x, self.y)
+
+    def __abs__(self):
+        return hypot(self.x, self.y)
+
+    def __bool__(self):
+        return bool(abs(self))
+
+    def __add__(self, other):
+        x = self.x + other.x
+        y = self.y + other.y
+        return Vector(x, y)
+
+    def __mul__(self, scalar):
+        return Vector(self.x * scalar, self.y * scalar)
+
+v1 = Vector(2, 4)
+v2 = Vector(2, 1)
+print(v1 + v2)
+
+v = Vector(3, 4)
+print(abs(v))
+
+print(v * 3)
+print(abs(v*3))
+```
+
+```python
+Vector(4, 5)
+5.0
+Vector(9, 12)
+15.0
+```
+
+#### 字符串表示形式
+
+```python
+    # 字符串表示形式, 把一个对象用字符串的形式表达出来以便辨认
+    # repr 通过 __repr__ 这个特殊方法来得到一个对象的字符串表示形式
+    # 如果没有实现 __repr__ , 我们在控制台打印一个向量的实例时, 得到的可能就是地址
+
+    # __repr__ 和 __str__ 的区别在于, 后者是在str()调用的时候被使用, 或是在用print函数打印一个对象的时候才被调用
+    # 如果你只想实现两个特殊方法中的一个, __repr__ 会是更好等等选择, 因为如果一个对象没有 __str__ 函数, 而Python需要调用它的时候, 解释器会用 __repr__ 代替
+```
+
+#### 算数运算符
+
+通过 `__add__`, `__mul__`为向量带来 `+`, `*`两个算数运算符
