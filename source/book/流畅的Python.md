@@ -484,3 +484,38 @@ list.sort 会就地排序列表, 不会把原列表复制一份. 方法返回值
 
 另一个排序集合模块[http://code.activestate.com/recipes/577197-sortedcollection/](http://code.activestate.com/recipes/577197-sortedcollection/), 模块里集成了 bisect 功能, 比独立的bisect更易用.
 
+### 当列表不是首选时
+
+面对各类需求, 我们可能会有更好的选择, 比如, 要存放1000万个浮点数的话, 数组(array)的效率要高得多, 因为数组在背后存的并不是float对象, 而是数字的机器翻译, 也就是字节表述.
+
+再比如, 如果要频繁对序列做先进先出的操作, deque(双端列表)的速度可能会更快.
+
+#### 数组
+
+如果我们需要一个只包含数字的列表, array.array 比 list 更高效. 数组支持所有跟可变序列有关的操作, 同时海通共文件读取和存入文件的更快的方法, 如, `.frombytes` 和 `.tofile`.
+
+查看代码
+
+#### 内存视图
+
+memoryview是一个内置类, 它能让用户在不复制内容的情况下操作同一个数组的不同切片.
+
+> 内存视图其实是泛化和去数学化的NumPy数组.
+
+#### NumPy和SciPy
+
+#### 双向队列和其他形式的队列
+
+双向队列 append 和 popleft 都是原子操作, 就是说deque可以在多线程程序中安全地当做先进先出的栈使用, 而使用者不用担心资源锁的问题.
+
+除了deque之外, 还有些其他的Python标准库也有对队列的实现
+
+可以查阅书籍, 看相关应用, 或特点
+
+- queue
+- multiprocessing
+- asyncio
+- heapq
+
+### 2. 小结
+
