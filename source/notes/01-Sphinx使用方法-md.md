@@ -1,4 +1,4 @@
-# Sphinx
+# Sphinx-md
 
 [Docs](http://www.sphinx-doc.org/en/1.4.8/contents.html)
 
