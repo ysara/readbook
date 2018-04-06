@@ -6,6 +6,14 @@
 Welcome to readbook's documentation!
 ====================================
 
+书单
+----
+
+.. toctree::
+   :glob:
+   
+   booklist/书单.md
+
 book
 -----
 
