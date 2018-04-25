@@ -11,6 +11,7 @@ Welcome to readbook's documentation!
 
 .. toctree::
    :glob:
+   :maxdepth: 1
    
    booklist/书单.md
 
