@@ -1,0 +1,107 @@
+第二章: 字符串和文本
+======================
+
+2.1 使用多个界定符分割字符串
+--------------------------
+
+``re.split()``
+
+当你使用 ``re.split()`` 函数时候，需要特别注意的是正则表达式中是否包含一个括号捕获分组。 如果使用了捕获分组，那么被匹配的文本也将出现在结果列表中.
+
+如果你不想保留分割字符串到结果列表中去，但仍然需要使用到括号来分组正则表达式的话， 确保你的分组是非捕获分组，形如 ``(?:...)`` 。
+
+2.2 字符串开头或结尾匹配
+-----------------------
+
+``str.startswith()`` 或者是 ``str.endswith()``
+
+如果你想检查多种匹配可能，只需要将所有的匹配项放入到一个元组中去， 然后传给 startswith() 或者 endswith() 方法：
+
+.. code-block:: python
+
+    >>> import os
+    >>> filenames = os.listdir('.')
+    >>> filenames
+    [ 'Makefile', 'foo.c', 'bar.py', 'spam.c', 'spam.h' ]
+    >>> [name for name in filenames if name.endswith(('.c', '.h')) ]
+    ['foo.c', 'spam.c', 'spam.h'
+    >>> any(name.endswith('.py') for name in filenames)
+    True
+    >>>
+
+你可以能还想使用正则表达式去实现，比如：
+
+.. code-block:: python
+
+    >>> import re
+    >>> url = 'http://www.python.org'
+    >>> re.match('http:|https:|ftp:', url)
+    <_sre.SRE_Match object at 0x101253098>
+    >>>
+
+这种方式也行得通，但是对于简单的匹配实在是有点小材大用了，本节中的方法更加简单并且运行会更快些。
+
+最后提一下，当和其他操作比如普通数据聚合相结合的时候 startswith() 和 endswith() 方法是很不错的。 比如，下面这个语句检查某个文件夹中是否存在指定的文件类型：
+
+.. code-block:: python
+
+    if any(name.endswith(('.c', '.h')) for name in listdir(dirname)):
+    ...
+
+
+2.3 用Shell通配符匹配字符串
+--------------------------
+
+``fnmatch`` 模块提供了两个函数—— ``fnmatch()`` 和 ``fnmatchcase()`` 
+
+``fnmatch()`` 函数匹配能力介于简单的字符串方法和强大的正则表达式之间。 如果在数据处理操作中只需要简单的通配符就能完成的时候，这通常是一个比较合理的方案。
+
+如果你的代码需要做文件名的匹配，最好使用 ``glob`` 模块。
+
+2.7 最短匹配模式
+--------------------------
+
+.. code-block:: language
+
+    >>> str_pat = re.compile(r'\"(.*)\"')
+    >>> text1 = 'Computer says "no."'
+    >>> str_pat.findall(text1)
+    ['no.']
+    >>> text2 = 'Computer says "no." Phone says "yes."'
+    >>> str_pat.findall(text2)
+    ['no." Phone says "yes.']
+    >>>
+
+在这个例子中，模式 r'\"(.*)\"' 的意图是匹配被双引号包含的文本。 但是在正则表达式中*操作符是贪婪的，因此匹配操作会查找最长的可能匹配。 于是在第二个例子中搜索 text2 的时候返回结果并不是我们想要的。
+
+为了修正这个问题，可以在模式中的*操作符后面加上?修饰符，就像这样：
+
+.. code-block:: python
+
+    >>> str_pat = re.compile(r'\"(.*?)\"')
+    >>> str_pat.findall(text2)
+    ['no.', 'yes.']
+    >>>
+
+这样就使得匹配变成**非贪婪模式**，从而得到最短的匹配，也就是我们想要的结果。
+
+2.8 多行匹配模式
+--------------------------
+
+为了修正这个问题，你可以修改模式字符串，增加对换行的支持。比如：
+
+.. code-block:: python
+
+    >>> comment = re.compile(r'/\*((?:.|\n)*?)\*/')
+    >>> comment.findall(text2)
+    [' this is a\n multiline comment ']
+    >>>
+
+``re.compile()`` 函数接受一个标志参数叫 ``re.DOTALL`` ，在这里非常有用。 它可以让正则表达式中的点(.)匹配包括换行符在内的任意字符。比如：
+
+.. code-block:: python
+
+    >>> comment = re.compile(r'/\*(.*?)\*/', re.DOTALL)
+    >>> comment.findall(text2)
+    [' this is a\n multiline comment ']
+对于简单的情况使用 re.DOTALL 标记参数工作的很好， 但是如果模式非常复杂或者是为了构造字符串令牌而将多个模式合并起来(2.18节有详细描述)， 这时候使用这个标记参数就可能出现一些问题。 如果让你选择的话，最好还是定义自己的正则表达式模式，这样它可以在不需要额外的标记参数下也能工作的很好。
