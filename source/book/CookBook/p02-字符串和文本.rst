@@ -61,7 +61,7 @@
 2.7 最短匹配模式
 --------------------------
 
-.. code-block:: language
+.. code-block:: python
 
     >>> str_pat = re.compile(r'\"(.*)\"')
     >>> text1 = 'Computer says "no."'
@@ -105,3 +105,219 @@
     >>> comment.findall(text2)
     [' this is a\n multiline comment ']
 对于简单的情况使用 re.DOTALL 标记参数工作的很好， 但是如果模式非常复杂或者是为了构造字符串令牌而将多个模式合并起来(2.18节有详细描述)， 这时候使用这个标记参数就可能出现一些问题。 如果让你选择的话，最好还是定义自己的正则表达式模式，这样它可以在不需要额外的标记参数下也能工作的很好。
+
+2.9 将Unicode文本标准化
+--------------------------
+
+``unicodedata`` 模块
+
+2.10 在正则式中使用Unicode
+--------------------------
+
+混合使用Unicode和正则表达式通常会让你抓狂。 如果你真的打算这样做的话，最好考虑下安装第三方正则式库， 它们会为Unicode的大小写转换和其他大量有趣特性提供全面的支持，包括模糊匹配。
+
+2.11 删除字符串中不需要的字符
+--------------------------
+
+通常情况下你想将字符串 strip 操作和其他迭代操作相结合，比如从文件中读取多行数据。 如果是这样的话，那么生成器表达式就可以大显身手了。比如：
+
+.. code-block:: python
+
+with open(filename) as f:
+    lines = (line.strip() for line in f)
+    for line in lines:
+        print(line)
+在这里，表达式 lines = (line.strip() for line in f) 执行数据转换操作。 这种方式非常高效，因为它不需要预先读取所有数据放到一个临时的列表中去。 它仅仅只是创建一个生成器，并且每次返回行之前会先执行 strip 操作。
+
+对于更高阶的strip，你可能需要使用 ``translate()`` 方法。
+
+2.13 字符串对齐
+--------------------------
+
+对于基本的字符串对齐操作，可以使用字符串的 ``ljust()`` , ``rjust()`` 和 ``center()`` 方法。
+
+函数 ``format()`` 同样可以用来很容易的对齐字符串。 你要做的就是使用 ``<,>`` 或者 ``^`` 字符后面紧跟一个指定的宽度。比如：
+
+.. code-block:: python
+
+    >>> format(text, '>20')
+    '         Hello World'
+    >>> format(text, '<20')
+    'Hello World         '
+    >>> format(text, '^20')
+    '    Hello World     '
+    >>>
+
+如果你想指定一个非空格的填充字符，将它写到对齐字符的前面即可：
+
+.. code-block:: python
+
+    >>> format(text, '=>20s')
+    '=========Hello World'
+    >>> format(text, '*^20s')
+    '****Hello World*****'
+    >>>
+
+但是，在新版本代码中，你应该优先选择 format() 函数或者方法。 format() 要比 % 操作符的功能更为强大。 并且 format() 也比使用 ljust() , rjust() 或 center() 方法更通用， 因为它可以用来格式化任意对象，而不仅仅是字符串。
+
+如果想要完全了解 format() 函数的有用特性，
+请参考 `在线Python文档 <https://docs.python.org/3/library/string.html#formatspec>`_
+
+2.14 合并拼接字符串 
+--------------------------
+如果你想要合并的字符串是在一个序列或者 iterable 中，那么最快的方式就是使用 join() 方法。比如：
+
+如果你想在源码中将两个字面字符串合并起来，你只需要简单的将它们放到一起，不需要用加号(+)。比如：
+
+.. code-block:: python
+
+    >>> a = 'Hello' 'World'
+    >>> a
+    'HelloWorld'
+    >>>
+
+最重要的需要引起注意的是，当我们使用加号(+)操作符去连接大量的字符串的时候是非常低效率的， 因为加号连接会引起内存复制以及垃圾回收操作。 特别的，你永远都不应像下面这样写字符串
+
+同样还得注意不必要的字符串连接操作。有时候程序员在没有必要做连接操作的时候仍然多此一举。比如在打印的时候：
+
+.. code-block:: python
+
+    print(a + ':' + b + ':' + c) # Ugly
+    print(':'.join([a, b, c])) # Still ugly
+    print(a, b, c, sep=':') # Better
+
+当混合使用I/O操作和字符串连接操作的时候，有时候需要仔细研究你的程序。 比如，考虑下面的两端代码片段：
+
+.. code-block:: python
+
+    # Version 1 (string concatenation)
+    f.write(chunk1 + chunk2)
+
+    # Version 2 (separate I/O operations)
+    f.write(chunk1)
+    f.write(chunk2)
+如果两个字符串很小，那么第一个版本性能会更好些，因为I/O系统调用天生就慢。 另外一方面，如果两个字符串很大，那么第二个版本可能会更加高效， 因为它避免了创建一个很大的临时结果并且要复制大量的内存块数据。 还是那句话，有时候是需要根据你的应用程序特点来决定应该使用哪种方案。
+
+最后谈一下，如果你准备编写构建大量小字符串的输出代码， 你最好考虑下使用生成器函数，利用yield语句产生输出片段。比如：
+
+.. code-block:: python
+
+    def sample():
+        yield 'Is'
+        yield 'Chicago'
+        yield 'Not'
+        yield 'Chicago?'
+这种方法一个有趣的方面是它并没有对输出片段到底要怎样组织做出假设。 例如，你可以简单的使用 join() 方法将这些片段合并起来：
+
+.. code-block:: python
+
+    text = ''.join(sample())
+或者你也可以将字符串片段重定向到I/O：
+
+.. code-block:: python
+
+    for part in sample():
+        f.write(part)
+
+2.15 字符串中插入变量
+--------------------------
+
+``format() ``
+
+如果要被替换的变量能在变量域中找到， 那么你可以结合使用 ``format_map()`` 和 ``vars()`` 。
+
+``vars()`` 还有一个有意思的特性就是它也适用于对象实例。比如：
+
+.. code-block:: python
+
+    >>> class Info:
+    ...     def __init__(self, name, n):
+    ...         self.name = name
+    ...         self.n = n
+    ...
+    >>> a = Info('Guido',37)
+    >>> s.format_map(vars(a))
+    'Guido has 37 messages.'
+    >>>
+
+``format`` 和 ``format_map()`` 的一个缺陷就是它们并不能很好的处理变量缺失的情况
+
+一种避免这种错误的方法是另外定义一个含有 __missing__() 方法的字典对象，就像下面这样：
+
+.. code-block:: python
+
+    class safesub(dict):
+    """防止key找不到"""
+    def __missing__(self, key):
+        return '{' + key + '}'
+现在你可以利用这个类包装输入后传递给 format_map() ：
+
+.. code-block:: python
+
+    >>> del n # Make sure n is undefined
+    >>> s.format_map(safesub(vars()))
+    'Guido has {n} messages.'
+    >>>
+
+如果你发现自己在代码中频繁的执行这些步骤，你可以将变量替换步骤用一个工具函数封装起来。就像下面这样：
+
+.. code-block:: python
+
+    import sys
+
+    def sub(text):
+        return text.format_map(safesub(sys._getframe(1).f_locals))
+现在你可以像下面这样写了：
+
+.. code-block:: python
+
+    >>> name = 'Guido'
+    >>> n = 37
+    >>> print(sub('Hello {name}'))
+    Hello Guido
+    >>> print(sub('You have {n} messages.'))
+    You have 37 messages.
+    >>> print(sub('Your favorite color is {color}'))
+    Your favorite color is {color}
+    >>>
+
+2.16 以指定列宽格式化字符串
+--------------------------
+
+``textwrap`` 格式化字符串
+
+.. code-block:: python
+
+    s = "Look into my eyes, look into my eyes, the eyes, the eyes, \
+    the eyes, not around the eyes, don't look around the eyes, \
+    look into my eyes, you're under."
+
+    >>> import textwrap
+    >>> print(textwrap.fill(s, 70))
+    Look into my eyes, look into my eyes, the eyes, the eyes, the eyes,
+    not around the eyes, don't look around the eyes, look into my eyes,
+    you're under.
+
+    >>> print(textwrap.fill(s, 40))
+    Look into my eyes, look into my eyes,
+    the eyes, the eyes, the eyes, not around
+    the eyes, don't look around the eyes,
+    look into my eyes, you're under.
+
+
+``textwrap`` 模块对于字符串打印是非常有用的，特别是当你希望输出自动匹配终端大小的时候。 你可以使用 ``os.get_terminal_size()`` 方法来获取终端的大小尺寸。比如：
+
+.. code-block:: python
+
+    >>> import os
+    >>> os.get_terminal_size().columns
+    80
+    >>>
+
+``fill()`` 方法接受一些其他可选参数来控制tab，语句结尾等。
+`textwrap.TextWrapper文档 <https://docs.python.org/3.3/library/textwrap.html#textwrap.TextWrapper>`_ 
+
+2.18 字符串令牌解析
+--------------------------
+
+关于更高阶的令牌化技术，你可能需要查看 PyParsing 或者 PLY 包。
