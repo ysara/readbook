@@ -1,7 +1,7 @@
 流畅的Python
 ============
 
-    英文原版由O’Reilly Media, Inc.出版, 2015. 中文版2017年5月第一版
+英文原版由O’Reilly Media, Inc.出版, 2015. 中文版2017年5月第一版
 
 前言
 ----
@@ -30,7 +30,7 @@ Python最好的品质之一是一致性.
 
 Python解释器碰到特殊的句法时, 会使用特殊方法去激活一些基本的对象操作,
 这些特殊方法的名字以两个下划线开头, 以两个下划线结尾(例如
-``__getitem__``), 比如 ``obj[key]`` 的背后就是\ ``__getitem__`` 方法,
+``__getitem__``), 比如 ``obj[key]`` 的背后就是 ``__getitem__`` 方法,
 为了能求得 ``my_collection[key]`` 的值, 解释器实际上会调用
 ``my_collection.__getitem__(key)``
 
@@ -92,7 +92,6 @@ Python内置了从一个序列中随机选出一个元素的函数 ``random.choi
     # 随机抽取一张纸牌
     from random import choice
     print(choice(deck))
-
 
     # __getitem__ 方法把 [] 操作交给了 self._card 列表, 所以我们的deck类自动支持切片(slicing)操作
 
