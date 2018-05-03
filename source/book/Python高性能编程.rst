@@ -86,7 +86,9 @@ Julia集合
 Julia集合是一个CPU密集型问题 可以产生复杂的输出图像的分型数列,
 函数包含一个CCPU密集型的组件和一个显式的输入集合 ​
 
-cProfile runsnakerun line_profiler
+- cProfile
+- runsnakerun
+- line_profiler
 
 用memory_profiler诊断内存的用量
 
@@ -742,9 +744,10 @@ trie树(MIT授权)使用了缓存友好的表达式从而在现代CPU上达成�
 trie树和DAWG数据结构提供了良好的收益,
 但它们在生产系统却提供了强大的收益.
 
-使用trie树的一个案例:
+使用trie树的一个案例
 
-https://github.com/j4mie/postcodeserver/
+`https://github.com/j4mie/postcodeserver/ <https://github.com/j4mie/postcodeserver/>`_ 
+
 
 使用更少RAM的窍门
 ~~~~~~~~~~~~~~~~~
