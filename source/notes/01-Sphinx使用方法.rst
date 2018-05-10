@@ -76,3 +76,10 @@ support <http://www.sphinx-doc.org/en/stable/theming.html>`__
 -  `sphinx\_rtd\_theme <https://pypi.python.org/pypi/sphinx_rtd_theme>`__
 
 -  `sphinx-bootstrap-theme <https://github.com/ryan-roemer/sphinx-bootstrap-theme>`__
+
+插入图片
+---------------------------
+.. code-block:: shell
+
+    资源文件放置于 source/_static 目录下, 绝对路径从 /_static 开始, 也可使用相对路径
+    .. image:: /_static/5g.jpg
