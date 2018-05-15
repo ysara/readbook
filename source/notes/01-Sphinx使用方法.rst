@@ -53,7 +53,7 @@ sphinx-autobuild
 
     # 安装sphinx-autobuild
     pip install sphinx-autobuild
-    # 监听 source 目录, 生成的文件放置于 build/html
+    # 监听 source 目录, 生成的文件放置于 _build/html
     sphinx-autobuild source _build/html
 
 Server 默认端口 ``8000``, `http://127.0.0.1:8000/ <http://127.0.0.1:8000/>`__
